@@ -71,7 +71,7 @@ export default function Home() {
 
       {/* Footer */}
       <footer className="border-t border-white/10 px-8 py-5 text-center text-white/30 text-xs">
-        Digital Product본부 © 2026
+        © 2026 Yun. All rights reserved.
       </footer>
     </main>
   );
