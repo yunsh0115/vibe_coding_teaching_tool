@@ -19,7 +19,7 @@ export async function POST(request: NextRequest) {
       model: "gemini-2.5-flash",
       generationConfig: {
         responseMimeType: "application/json",
-        maxOutputTokens: 8192,
+        maxOutputTokens: 65536,
       },
     });
 
@@ -56,8 +56,8 @@ export async function POST(request: NextRequest) {
   ]
 }
 
-각 날짜마다 아침/점심/저녁 식사와 관광 명소를 포함한 5-7개 일정을 작성하세요.
-동행 유형과 직업을 고려해 여행 스타일을 맞춰주세요. 예를 들어 가족과 함께라면 가족 친화적 코스, 직장인이라면 효율적인 일정으로 작성해주세요.
+각 날짜마다 4개 일정(아침/점심/관광/저녁)만 작성하세요. 간결하게 작성하세요.
+동행 유형과 직업을 고려해 여행 스타일을 맞춰주세요.
 `;
 
     const result = await model.generateContent(prompt);
