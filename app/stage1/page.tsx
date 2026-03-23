@@ -9,21 +9,37 @@ type Step = {
   description: string;
   actions: string[];
   download?: string;
+  link?: string;
+  linkLabel?: string;
 };
 
 const steps: Step[] = [
   {
     number: 1,
-    title: "GitHub 가입",
-    description: "github.com 에 접속해서 계정을 만듭니다.",
+    title: "구글 계정 만들기",
+    description: "구글 계정이 없다면 먼저 만들어주세요. 이후 모든 서비스에 구글 계정으로 가입합니다.",
     actions: [
-      "github.com 접속",
-      "Sign up 클릭",
-      "이메일, 비밀번호 입력 후 가입 완료",
+      "아래 링크 클릭",
+      "이름, 이메일, 비밀번호 입력 후 계정 생성",
+      "이미 구글 계정이 있다면 이 단계 건너뛰기",
     ],
+    link: "https://accounts.google.com/signup",
+    linkLabel: "구글 계정 만들기",
   },
   {
     number: 2,
+    title: "GitHub 가입",
+    description: "github.com 에 접속해서 계정을 만듭니다.",
+    actions: [
+      "아래 링크 클릭",
+      "Sign up 클릭",
+      "이메일, 비밀번호 입력 후 가입 완료",
+    ],
+    link: "https://github.com/",
+    linkLabel: "GitHub 바로가기",
+  },
+  {
+    number: 3,
     title: "샘플 HTML 파일 준비",
     description: "아래 버튼으로 index.html을 다운로드 받고 폴더에 저장합니다.",
     actions: [
@@ -33,7 +49,7 @@ const steps: Step[] = [
     download: "/sample1.html",
   },
   {
-    number: 3,
+    number: 4,
     title: "GitHub에 레포지토리 생성 & 파일 업로드",
     description: "GitHub 웹에서 바로 파일을 올립니다. 터미널 없이 됩니다.",
     actions: [
@@ -45,17 +61,19 @@ const steps: Step[] = [
     ],
   },
   {
-    number: 4,
+    number: 5,
     title: "Vercel 가입",
     description: "vercel.com 에 접속해서 GitHub 계정으로 가입합니다.",
     actions: [
-      "vercel.com 접속",
+      "아래 링크 클릭",
       "Continue with GitHub 클릭",
       "권한 허용 후 가입 완료",
     ],
+    link: "https://vercel.com/",
+    linkLabel: "Vercel 바로가기",
   },
   {
-    number: 5,
+    number: 6,
     title: "Vercel과 GitHub 연동 & 배포",
     description: "Vercel이 GitHub 레포지토리를 자동으로 배포하게 설정합니다.",
     actions: [
@@ -65,7 +83,7 @@ const steps: Step[] = [
     ],
   },
   {
-    number: 6,
+    number: 7,
     title: "배포 확인",
     description: "Vercel이 제공한 URL로 접속해서 내 페이지가 올라갔는지 확인합니다.",
     actions: [
@@ -74,7 +92,7 @@ const steps: Step[] = [
     ],
   },
   {
-    number: 7,
+    number: 8,
     title: "HTML 수정 → 자동 배포 확인",
     description: "GitHub 웹에서 직접 파일을 수정하면 Vercel이 자동으로 재배포합니다.",
     actions: [
@@ -86,7 +104,7 @@ const steps: Step[] = [
     ],
   },
   {
-    number: 8,
+    number: 9,
     title: "CI/CD 개념 정리",
     description: "방금 한 것이 바로 CI/CD입니다.",
     actions: [
@@ -94,6 +112,17 @@ const steps: Step[] = [
       "CD (Continuous Deployment): 감지된 변경을 자동으로 배포",
       "GitHub push → Vercel 자동 배포 = CI/CD 파이프라인",
     ],
+  },
+  {
+    number: 10,
+    title: "안티그래비티 체험하기",
+    description: "구글의 실험적 프로젝트 안티그래비티를 체험해봅니다.",
+    actions: [
+      "아래 링크 클릭",
+      "안티그래비티 체험",
+    ],
+    link: "https://antigravity.google/",
+    linkLabel: "안티그래비티 바로가기",
   },
 ];
 
@@ -164,6 +193,16 @@ export default function Stage1() {
                         </li>
                       ))}
                     </ul>
+                    {step.link && (
+                      <a
+                        href={step.link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-block mt-4 px-5 py-2 text-sm font-bold border border-white/30 text-white rounded-full hover:bg-white/10 transition-colors"
+                      >
+                        → {step.linkLabel}
+                      </a>
+                    )}
                     {step.download && (
                       <a
                         href={step.download}

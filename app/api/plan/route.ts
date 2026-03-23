@@ -11,79 +11,62 @@ export async function POST(request: NextRequest) {
     }
 
     const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+    const model = genAI.getGenerativeModel({
+      model: "gemini-2.5-flash",
+      generationConfig: {
+        responseMimeType: "application/json",
+        maxOutputTokens: 8192,
+      },
+    });
 
     const prompt = `
-당신은 IT 기획 전문가입니다. 아래 정보를 바탕으로 바이브 코딩(AI 코딩 툴) 실습용 기획서와 단계별 프롬프트를 작성해주세요.
+당신은 시니어 풀스택 개발자이자 AI 코딩 툴 전문가입니다.
+아래 앱 정보를 바탕으로 기획서와, 안티그래비티(AI 코딩 툴)에 그대로 복붙하면 즉시 개발이 가능한 수준의 단계별 프롬프트를 작성하세요.
 
 앱 정보:
 - 앱 이름: ${appName}
 - 주요 기능: ${features.join(", ")}
 - 타겟 사용자: ${target}
-- 플랫폼: ${platform}
-- 기술 스택: Next.js, Tailwind CSS, Gemini API
+- 플랫폼: ${platform ?? "웹 (PC/모바일)"}
+- 기술 스택: Next.js 14 (App Router), Tailwind CSS, TypeScript, Gemini API (@google/generative-ai)
 
-다음 JSON 형식으로 정확히 응답해주세요. JSON 외의 텍스트는 절대 포함하지 마세요:
+프롬프트 작성 규칙:
+1. 각 프롬프트는 AI 코딩 툴에게 직접 내리는 명령문 형식으로 작성
+2. 생성할 파일 경로(예: app/page.tsx, app/api/generate/route.ts)를 명시
+3. 컴포넌트명, 함수명, 변수명, 타입명을 구체적으로 지정
+4. UI는 black 배경, white 텍스트의 다크 미니멀 스타일로 Tailwind CSS 사용 명시
+5. 상태 관리는 useState, API 호출은 fetch 사용 명시
+6. 각 단계는 이전 단계 결과물 위에 이어서 작업하는 방식으로 연결
+7. Gemini API 연동 단계에서는 환경변수 GEMINI_API_KEY 사용 명시
+8. 프롬프트는 충분히 상세하게, 최소 5문장 이상으로 작성
+
+다음 JSON 스키마에 맞게 응답해주세요:
 
 {
   "기획서": {
-    "앱이름": "앱 이름",
-    "한줄소개": "앱을 한 문장으로 설명",
-    "개요": "앱의 목적과 가치를 2-3문장으로 설명",
-    "주요기능": [
-      { "기능명": "기능 이름", "설명": "기능 설명" }
-    ],
-    "기술스택": [
-      { "분류": "프론트엔드", "기술": "Next.js, Tailwind CSS" },
-      { "분류": "AI", "기술": "Google Gemini API" },
-      { "분류": "배포", "기술": "Vercel" }
-    ],
-    "화면구성": [
-      { "화면명": "화면 이름", "설명": "화면 설명" }
-    ]
+    "앱이름": string,
+    "한줄소개": string,
+    "개요": string,
+    "주요기능": [{ "기능명": string, "설명": string }],
+    "기술스택": [{ "분류": string, "기술": string }],
+    "화면구성": [{ "화면명": string, "설명": string }]
   },
   "프롬프트": [
-    {
-      "단계": 1,
-      "제목": "프로젝트 초기 설정",
-      "설명": "이 단계에서 하는 일 설명",
-      "프롬프트": "Claude Code나 Cursor에 그대로 복붙할 수 있는 실제 프롬프트 (구체적이고 상세하게)"
-    },
-    {
-      "단계": 2,
-      "제목": "UI 레이아웃 구현",
-      "설명": "이 단계에서 하는 일 설명",
-      "프롬프트": "Claude Code나 Cursor에 그대로 복붙할 수 있는 실제 프롬프트"
-    },
-    {
-      "단계": 3,
-      "제목": "핵심 기능 구현",
-      "설명": "이 단계에서 하는 일 설명",
-      "프롬프트": "Claude Code나 Cursor에 그대로 복붙할 수 있는 실제 프롬프트"
-    },
-    {
-      "단계": 4,
-      "제목": "Gemini API 연동",
-      "설명": "이 단계에서 하는 일 설명",
-      "프롬프트": "Claude Code나 Cursor에 그대로 복붙할 수 있는 실제 프롬프트"
-    },
-    {
-      "단계": 5,
-      "제목": "마무리 및 배포 준비",
-      "설명": "이 단계에서 하는 일 설명",
-      "프롬프트": "Claude Code나 Cursor에 그대로 복붙할 수 있는 실제 프롬프트"
-    }
+    { "단계": number, "제목": string, "설명": string, "프롬프트": string }
   ]
 }
+
+프롬프트는 반드시 5단계로 작성하세요:
+1단계: Next.js 프로젝트 초기 설정 및 폴더 구조 생성
+2단계: 메인 UI 레이아웃 및 컴포넌트 구현
+3단계: 핵심 인터랙션 및 상태 관리 구현
+4단계: Gemini API 연동 및 백엔드 route 구현
+5단계: 마무리 스타일링 및 Vercel 배포 설정
 `;
 
     const result = await model.generateContent(prompt);
     const text = result.response.text().trim();
-
-    // JSON 파싱 (```json 블록 처리)
-    const jsonMatch = text.match(/```json\s*([\s\S]*?)```/) || text.match(/(\{[\s\S]*\})/);
-    const jsonText = jsonMatch ? jsonMatch[1] : text;
-    const data = JSON.parse(jsonText);
+    const data = JSON.parse(text);
 
     return Response.json(data);
   } catch (error) {
