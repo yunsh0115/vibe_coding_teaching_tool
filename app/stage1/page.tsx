@@ -30,7 +30,7 @@ const steps: Step[] = [
       "아래 다운로드 버튼 클릭",
       "바탕화면에 새 폴더 만들고 그 안에 저장",
     ],
-    download: "/sample-index.html",
+    download: "/sample1.html",
   },
   {
     number: 3,
