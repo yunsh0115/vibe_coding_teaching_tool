@@ -5,7 +5,7 @@ export default function Home() {
     <main className="min-h-screen bg-black text-white flex flex-col">
       {/* Header */}
       <header className="border-b border-white/10 px-8 py-5">
-        <p className="text-sm text-white/50 tracking-widest uppercase">Digital Product본부</p>
+        <p className="text-sm text-white/50 tracking-widest uppercase">Product 1팀</p>
         <h1 className="text-xl font-bold mt-1">바이브 코딩 과정</h1>
       </header>
 
