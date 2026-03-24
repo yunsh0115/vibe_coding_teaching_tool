@@ -234,10 +234,10 @@ export default function Stage1() {
             <p className="text-2xl font-bold mb-2">🎉 1단계 완료!</p>
             <p className="text-white/50 mb-6">이제 AI 앱을 만들어볼 차례입니다.</p>
             <Link
-              href="/stage2"
+              href="/plan"
               className="inline-block bg-white text-black font-bold px-8 py-3 rounded-full hover:bg-white/90 transition-colors"
             >
-              2단계 시작하기 →
+              1단계 시작하기 →
             </Link>
           </div>
         )}
